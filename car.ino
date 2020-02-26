@@ -1,13 +1,23 @@
 int Motor_A_Enable = 9;
-int Motor_A_Reverse = 3;
-int Motor_A_Forward = 4;
 int Motor_B_Enable = 10;
 
-int Motor_B_Reverse = 12;
-int Motor_B_Forward = 7;
+int Motor_A_Reverse = 3;
+int Motor_A_Forward = 4;
 
-int motor_a_speed = 225;
-int motor_b_speed = 225;
+
+int Motor_B_Reverse = 5;
+int Motor_B_Forward = 6;
+
+int motor_a_speed = 70;
+int motor_b_speed = 70;
+
+int trigPin = A0;
+int echoPin = A1;
+
+long duration;
+int distance;
+int getDistance;
+
 
 void setup() {
   // put your setup code here, to run once:
@@ -23,7 +33,14 @@ void setup() {
 }
 
 void loop() {
-
+  long duration, distance;
+  digitalWrite(trigPin, HIGH);
+  delayMicroseconds(1000);
+  digitalWrite(trigPin, LOW);
+  duration = pulseIn(echoPin, HIGH);
+  distance = (duration / 2) / 29.1;
+  Serial.println(distance);
+  
   if (Serial.available() > 0)
   {
     char data;
@@ -35,6 +52,13 @@ void loop() {
     switch (data)
     {
       case 'F': //FORWARD
+       if (distance <= 25){
+         analogWrite(Motor_A_Enable, 0);
+         analogWrite(Motor_B_Enable, 0);
+         Serial.println("Obstacle");
+        
+       }
+       else{
         Serial.print("Forward\n");
         analogWrite(Motor_B_Enable, motor_a_speed);
         analogWrite(Motor_A_Enable, motor_b_speed);
@@ -42,6 +66,7 @@ void loop() {
         digitalWrite(Motor_B_Reverse, LOW);
         digitalWrite(Motor_A_Forward, HIGH);
         digitalWrite(Motor_B_Forward, HIGH);
+       }
         break;
       case 'B': //REVERSE
         Serial.print("Reverse\n");
@@ -90,17 +115,32 @@ void loop() {
         break;
 
       case '1':
-        motor_a_speed = 120;
-        motor_b_speed = 120;
+        motor_a_speed = 70;
+        motor_b_speed = 70;
+        break;
+
+      case '2':
+        motor_a_speed = 100;
+        motor_b_speed = 100;
         break;
 
 
       case '3':
-        motor_a_speed = 150;
-        motor_b_speed = 150;
+        motor_a_speed = 120;
+        motor_b_speed = 120;
+        break;
+
+      case '4':
+        motor_a_speed = 140;
+        motor_b_speed = 140;
         break;
 
       case '5':
+        motor_a_speed = 160;
+        motor_b_speed = 160;
+        break;
+
+      case '6':
         motor_a_speed = 200;
         motor_b_speed = 200;
         break;
@@ -116,4 +156,5 @@ void loop() {
         analogWrite(Motor_B_Enable, 0);
     }
   }
+
 }
